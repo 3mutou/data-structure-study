@@ -1,0 +1,70 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct Node
+{
+	int data;
+	struct Node* next;
+};
+struct Node* createList() //该函数返回一个指向链表头的指针
+{
+	struct Node* headNode = (struct Node*)malloc(sizeof(struct Node));
+	headNode->next = NULL;
+	return headNode;
+}
+struct Node* createNode(int data)
+{
+	struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+	newNode->data = data;
+	newNode->next = NULL;
+	return newNode;
+}
+void printlist(struct Node* headNode)
+{
+	struct Node* pMove = headNode->next;
+	while (pMove)
+	{
+		printf("%d\t", pMove->data);
+		pMove = pMove->next;
+	}
+	printf("\n");
+}
+void insertNodeByHead(struct Node* headNode, int data)
+{
+	struct Node* newNode = createNode(data);
+	newNode->next = headNode->next;
+	headNode->next = newNode;
+}
+void deleNodeByAppoin(struct Node* headNode, int posData)
+{
+	struct Node* posNode = headNode->next;
+	struct Node* posNodeFront = headNode;
+	if (posNode == NULL)
+		printf("该链表为空！");
+	else
+	{
+		while (posNode->data != posData)
+		{
+			posNodeFront = posNode;
+			posNode = posNode->next;
+			if (posNode == NULL)
+			{
+				printf("未找到相关信息");
+				return;
+			}
+		}
+		posNodeFront->next = posNode->next;
+		free(posNode);
+	}
+}
+int main()
+{
+	struct Node* point = createList();
+	insertNodeByHead(point, 1);
+	insertNodeByHead(point, 2);
+	insertNodeByHead(point, 3);
+	printlist(point);
+	deleNodeByAppoin(point, 3);
+	printlist(point);
+	system("pause");
+	return 0;
+}
