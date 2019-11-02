@@ -1,0 +1,102 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct Lnode {
+	int data1;
+	int data2;
+	struct Lnode *next;
+}Lnode1, *Linklist;
+void createList(Linklist L, int n)
+{
+	Linklist q, p;
+	q = L;
+	int i;
+	for (i = 0; i < n; i++) {
+		p = (Linklist)malloc(sizeof(Lnode1));
+		p->next = NULL;
+		printf("请输入多项式系数：");
+		scanf_s("%d", &p->data1);
+		printf("请输入多项式次数：");
+		scanf_s("%d", &p->data2);
+		q->next = p;
+		q = p;
+	}
+	printf("创建链表成功！\n");
+}
+void printflist(Linklist L)
+{
+	Linklist p,q;
+	p = L->next;
+	q = p->next;
+	while(p)
+	{
+		printf("%dx*%d", p->data1, p->data2);
+		while (q) {
+			printf("+");
+			q = q->next;
+			break;
+		}
+		p = p->next;
+	}
+
+}
+int cmp(int a, int b) {       //次数比较
+	if (a - b > 0) return 1;
+	else if(a - b == 0) return 0;
+	else if(a - b < 0) return -1;
+}
+int cmp2(int a, int b) {      //系数比较
+	if (a + b == 0) return 0;
+	else return 1;
+}
+void Add(Linklist L1, Linklist L2,Linklist L3)
+{
+	Linklist p1, p2, p3;
+	Linklist t;
+	L3 =p3= L1;
+	p1 = L1->next; p2 = L2->next;
+	while (p1&&p2) {
+		switch (cmp(p1->data2, p2->data2)) {
+		case 1:
+			p3->next = p2; p3 = p2; p2 = p2->next; break;
+		case -1:
+			p3 -> next = p1; p3 = p1; p1 = p1->next; break;
+		case 0:
+			if (cmp2(p1->data1, p2->data1)) {
+				p1->data1 = p1->data1 + p2->data1;
+				p3->next = p1; p3 = p1; p1 = p1->next; 
+				t = p2; p2 = p2->next; free(t);
+			}
+			else {
+				p1 = p1->next; p2 = p2->next;
+			}
+		}
+	} 
+	p3->next = p1 ? p1 : p2;
+	free(L2);
+}
+int main()
+{
+	Linklist head1,head2,head3;
+	int i,j;
+	head1 = (Linklist)malloc(sizeof(Lnode1));
+	head1->next = NULL;
+	head2 = (Linklist)malloc(sizeof(Lnode1));
+	head2->next = NULL;
+	head3 = (Linklist)malloc(sizeof(Lnode1));
+	head3->next = NULL;
+	head3 = head1;
+	printf("输入第一个多项式的个数：");
+	scanf_s("%d", &i);
+	createList(head1, i);
+	printf("请输入第二个多项式的个数：");
+	scanf_s("%d", &j);
+	createList(head2, j);
+	printf("运算结果：");
+	printflist(head1);printf("+");
+	printflist(head2);printf("=");
+	Add(head1, head2, head3);
+	printflist(head3);
+	free(head1);
+	system("pause");
+	return 0;
+}
